@@ -62,10 +62,10 @@ func _add_property(scene:PackedScene) -> void:
 	var control = scene.instantiate() as PandoraPropertyControl
 	var property = Pandora.create_property(current_entity as PandoraCategory, _generate_property_name(control.type, current_entity), control.type)
 	if property != null:
-		_add_property_control(control, property)
+		_add_property_control(control, property, true)
 
 
-func _add_property_control(control:PandoraPropertyControl, property:PandoraProperty) -> void:
+func _add_property_control(control:PandoraPropertyControl, property:PandoraProperty, new_property=false) -> void:
 	var control_kvp = PropertyControlKvp.instantiate()
 	control.init(property)
 	control_kvp.init(property, control, Pandora._entity_backend)
@@ -73,6 +73,8 @@ func _add_property_control(control:PandoraPropertyControl, property:PandoraPrope
 		inherited_property_selected.emit(category_id, property_name))
 	property_list.add_child(control_kvp)
 	control_kvp.original_property_selected.connect(property_settings_container.set_property)
+	if new_property:
+		control_kvp.property_key_edit.grab_focus.call_deferred()
 
 
 func _generate_property_name(type:String, entity:PandoraEntity) -> String:
